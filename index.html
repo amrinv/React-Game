@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./assets/stylesheet/style.css" />
+    <title>React Sports Game</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@16/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script type="text/babel">
+      class Team extends React.Component {
+        constructor(props) {
+          super(props);
+
+          this.state = {
+            shots: 0,
+            score: 0,
+          };
+
+          this.shotSound = new Audio("./assets/Audios/Home_Run.mp3");
+          this.scoreSound = new Audio("./assets/Audios/claps3.mp3");
+        }
+
+        shotHandler = (event) => {
+          if (Math.random() > 0.5) {
+            this.setState((state, props) => ({ score: state.score + 1 }));
+            this.scoreSound.play();
+          }
+          this.setState((state, props) => ({ shots: state.shots + 1 }));
+          this.shotSound.play();
+        };
+        render() {
+          let shotPercentageDiv;
+
+          if (this.state.shots) {
+            const shotPercentage = Math.round(
+              (this.state.score / this.state.shots) * 100
+            );
+            shotPercentageDiv = (
+              <div>
+                <strong>Shooting Percentage: </strong>
+                {shotPercentage}%
+              </div>
+            );
+          }
+
+          return (
+            <div className="Team">
+              <h2> {this.props.name}</h2>
+              <div className="identity">
+                <img src={this.props.logo} alt={this.props.name} />
+              </div>
+              <div>
+                <strong>Shots:</strong>
+                {this.state.shots}
+              </div>
+              <div>
+                <strong>Score:</strong>
+                {this.state.score}
+              </div>
+              <div>{shotPercentageDiv}</div>
+              <div className="button">
+                <button onClick={this.shotHandler}>Shoot!</button>
+              </div>
+            </div>
+          );
+        }
+      }
+
+      function Game(props) {
+        return (
+          <div className="Game">
+            <h1> Welcome to {props.venue}</h1>
+            <div className="Team">
+              <Team name={props.homeTeam.name} logo={props.homeTeam.logoSrc} />
+            </div>
+            <div className="versus">
+              <h1>VS </h1>
+            </div>
+            <div className="Team">
+              <Team
+                name={props.visitingTeam.name}
+                logo={props.visitingTeam.logoSrc}
+              />
+            </div>
+            <h1>----------------------------------------------</h1>
+          </div>
+        );
+      }
+
+      function App(props) {
+        const RMadrid = {
+          name: "Real Madrid",
+          logoSrc:
+            "https://cdn.freebiesupply.com/logos/large/2x/real-madrid-c-f-logo-png-transparent.png",
+        };
+
+        const Barca = {
+          name: "Barcelona",
+          logoSrc:
+            "https://assets.stickpng.com/images/584a9b3bb080d7616d298777.png",
+        };
+
+        const ManUtd = {
+          name: "Manchester United",
+          logoSrc:
+            "https://assets.stickpng.com/images/580b57fcd9996e24bc43c4e7.png",
+        };
+
+        const ManCity = {
+          name: "Manchester City",
+          logoSrc:
+            "https://assets.stickpng.com/images/580b57fcd9996e24bc43c4e6.png",
+        };
+        return (
+          <div className="App">
+            <div className="Game1">
+              <Game
+                venue="Old Trafford Stadium"
+                homeTeam={ManUtd}
+                visitingTeam={ManCity}
+              />
+            </div>
+
+            <Game
+              venue="Santiago Bernabeu Stadium"
+              homeTeam={RMadrid}
+              visitingTeam={Barca}
+            />
+          </div>
+        );
+      }
+
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
